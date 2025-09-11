@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="">
+    <meta name="author" content="Themepixels">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href=" {% static 'img/favicon.png' %}">
+
+    <title>Server Status </title>
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="{% static 'fonts/remixicon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/prism.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/apexcharts.css' %}">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
+
+    <!-- Matomo -->
+    <script>
+      var _paq = window._paq = window._paq || [];
+  
+      // Set User ID
+      _paq.push(['setUserId', '{{ request.user.username }}']);
+      
+      // Track Session Start
+      _paq.push(['trackEvent', 'Session', 'Start', new Date().toISOString()]);
+      
+      // Enable Heartbeat Timer
+      _paq.push(['enableHeartBeatTimer', 15]);
+      
+      // Track Page View
+      _paq.push(['trackPageView']);
+      _paq.push(['trackVisibleContentImpressions']);
+      _paq.push(['enableLinkTracking']);
+      
+      // Track Time Spent on Page
+      var pageEnterTime = new Date();
+      window.addEventListener('beforeunload', function () {
+        var timeSpent = Math.round((new Date() - pageEnterTime) / 1000);
+        _paq.push(['trackEvent', 'Page', 'Time Spent', window.location.pathname, timeSpent]);
+        _paq.push(['trackEvent', 'Session', 'End', new Date().toISOString()]);
+      });
+
+      (function() {
+        var u="https://17216015.matomo.cloud/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src='https://cdn.matomo.cloud/17216015.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <!-- End Matomo Code -->
+  </head>
+  <body>
+
+    {% block content %}
+
+    {% endblock content %}
+
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/chart.min.js' %}"></script>
+    <script src="{% static 'js/apexcharts.min.js' %}"></script>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/db.data.js' %}"></script>
+    <script src="{% static 'js/db.helpdesk.js' %}"></script>
+
+    <script src="{% static 'highcharts/highcharts.js' %}"></script>
+    <script src="{% static 'highcharts/data.js' %}"></script>
+    <script src="{% static 'highcharts/exporting.js' %}"></script>
+    <script src="{% static 'highcharts/export-data.js' %}"></script>
+    <script src="{% static 'highcharts/accessibility.js' %}"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    {% block myScript %}
+    
+    {% endblock myScript %}
+  </body>
+</html>

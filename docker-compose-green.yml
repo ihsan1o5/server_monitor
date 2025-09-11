@@ -1,0 +1,74 @@
+version: "3"
+services:
+  # Green version of the app
+  django-green:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8005:8000"  # Green version on port 8005
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - /var/www/html/server_monitor:/var/www/html/server_monitor
+    networks:
+      monitornetwork:
+        ipv4_address: 172.29.0.5
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+  # Redis service
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      monitornetwork:
+        ipv4_address: 172.29.0.8
+
+  # Celery worker for the green version
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A server_monitor worker --loglevel=info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      monitornetwork:
+        ipv4_address: 172.29.0.6
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+  # Celery Beat for scheduled tasks
+  celery-beat:
+    build: .
+    command: celery -A server_monitor beat --loglevel=info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      monitornetwork:
+        ipv4_address: 172.29.0.7
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+networks:
+  monitornetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/16

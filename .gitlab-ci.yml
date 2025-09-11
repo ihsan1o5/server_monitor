@@ -1,0 +1,55 @@
+stages:
+    - Deploy
+
+variables:
+  ENV_DIR: /root
+  PROJECT_DIR: /root/server_monitor
+  MIDDLEWARE_SERVER: 10.10.10.81
+  USER: root
+  MIDDLEWARE_SSH_KEY: $Middleware_Server_SSH
+
+before_script:
+  # For Development
+  - eval $(ssh-agent -s)
+  - echo "$MIDDLEWARE_SSH_KEY" | tr -d '\r' > /tmp/gitlab_mw_ssh_key
+  # - cat /tmp/gitlab_ssh_key # Debugging line
+  - chmod 600 /tmp/gitlab_mw_ssh_key
+  - ssh-add /tmp/gitlab_mw_ssh_key
+
+#----------------------------------------------------------------------------------------------------#
+#------------------------------------------DEPLOY SCRIPTS-------------------------------------------#
+#----------------------------------------------------------------------------------------------------#
+
+#############-----------------------------MIDDLEWARE SERVER-----------------------------#############
+
+Middleware  Server:
+  stage: Deploy
+  tags:
+    - middleware    
+  script:
+    # Setup SSH
+    - mkdir -p ~/.ssh
+    - echo "$MIDDLEWARE_SSH_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_ed25519
+
+    # Add Middleware server to known_hosts to avoid prompt
+    - ssh-keyscan -p 2786 "$MIDDLEWARE_SERVER" >> ~/.ssh/known_hosts
+
+    # Deploy if server is reachable
+    - |
+      echo "Deploying to Middleware server..."
+      if nc -z -w 5 "$MIDDLEWARE_SERVER" 2786; then
+        echo "Stopping Docker......"
+        ssh -p 2786 $USER@$MIDDLEWARE_SERVER "cd $PROJECT_DIR && docker-compose down"       
+        rsync -avz -e "ssh -p 2786" --delete "$CI_PROJECT_DIR/" "$USER@$MIDDLEWARE_SERVER:$PROJECT_DIR"
+        echo "Copying .env......"
+        ssh -p 2786 $USER@$MIDDLEWARE_SERVER "cp /root/.env $PROJECT_DIR/."        
+        echo "Starting Docker......"
+        ssh -p 2786 $USER@$MIDDLEWARE_SERVER "cd $PROJECT_DIR && docker-compose -f $PROJECT_DIR/docker-compose-green.yml up --build -d"
+        echo "✅ Deployment to Middleware Server complete."
+      else
+        echo "❌ MIDDLEWARE_SERVER is unreachable. Skipping deployment."
+      fi
+  when: manual
