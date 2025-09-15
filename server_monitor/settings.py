@@ -171,10 +171,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'monitor.tasks.clear_old_server_status',
         'schedule': crontab(hour=3, minute=0),
     },
-    'send-sms-alert-every-1-minutes': {
-        'task': 'monitor.tasks.send_sms_alert',
-        'schedule': timedelta(minutes=1),
-    },
+    # 'send-sms-alert-every-1-minutes': {
+    #     'task': 'monitor.tasks.send_sms_alert',
+    #     'schedule': timedelta(minutes=1),
+    # },
 }
 
 # Celery Settings

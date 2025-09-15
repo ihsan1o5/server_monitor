@@ -434,7 +434,6 @@
               </nav>
             </div><!-- card-header -->
             <div class="card-body">
-              <div id="apexChart2" class="apex-chart-four mb-5"></div>
               <div class="table-responsive">
                 <table class="table table-agent mb-0">
                   <thead>
@@ -617,6 +616,7 @@
                               
                               // Start polling after the initial load
                               setInterval(() => {
+                                  console.log("checking container db server =================");
                                   fetch('/monitor/get_db_data/')
                                       .then(response => response.json())
                                       .then(data => {
@@ -637,7 +637,7 @@
                   useUTC: false
               },
               title: {
-                  text: 'Database Server (10.10.10.15)'
+                  text: 'Live-Dashboard Server (8.8.8.8)'
               },
               xAxis: {
                   type: 'datetime',
@@ -757,7 +757,7 @@
               useUTC: false
           },
           title: {
-              text: 'API Server (10.10.10.16)'
+              text: 'Live-Database Server (1.1.1.1)'
           },
           xAxis: {
               type: 'datetime',
@@ -876,7 +876,7 @@
                 useUTC: false
             },
             title: {
-                text: 'Dashboard Server (10.10.10.17)'
+                text: 'Live-API Server (142.250.190.78)'
             },
             xAxis: {
                 type: 'datetime',
@@ -945,6 +945,7 @@
 
       // Function to fetch data from the backend for a specific server IP
       async function fetchServerData(server_ip) {
+        print("server ip ======= ======= ===== >>>>> ", server_ip)
         if (!server_ip) {
           console.error("Invalid server IP:", server_ip);
           return null;
@@ -1107,6 +1108,10 @@
           }
         }
       }
+
+      window.print = function() {
+        console.log("Blocked unwanted print trigger.");
+      };
     });
   </script>
 {% endblock myScript %}

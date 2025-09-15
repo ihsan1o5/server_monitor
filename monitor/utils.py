@@ -1,13 +1,11 @@
 from django.db import connections, close_old_connections
-from django.db.models import Q, Func, F, Value, CharField, OuterRef, Subquery, Window
-from django.db.models.functions import RowNumber
+from django.db.models import Q, Func, F, Value, CharField, OuterRef, Subquery
 from .models import ServerStatus, VirtualServer, ServerStatusHistory
 import socket
 from django.utils import timezone
 import time
 from datetime import datetime
 import requests
-from ping3 import ping
 
 
 def check_server_status():

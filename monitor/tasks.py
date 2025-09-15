@@ -19,11 +19,11 @@ def clear_old_server_status():
     clear_server_status_data()
 
 
-@shared_task
-def send_sms_alert():
-    logger.info("Executing task for sending SMS alerts!")
-    try:
-        # Call the management command 'send_sms' directly
-        call_command('send_sms')
-    except Exception as e:
-        logger.error(f"Error while sending SMS: {str(e)}")
+# @shared_task
+# def send_sms_alert():
+#     logger.info("Executing task for sending SMS alerts!")
+#     try:
+#         # Call the management command 'send_sms' directly
+#         call_command('send_sms')
+#     except Exception as e:
+#         logger.error(f"Error while sending SMS: {str(e)}")

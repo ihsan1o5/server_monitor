@@ -56,7 +56,7 @@ def ServerMonitor(request):
 
 def LiveDatabaseServerGraphData(request):
 
-    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='10.10.10.15').values_list('id', flat=True)
+    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='8.8.8.8').values_list('id', flat=True)
 
     # Subquery to get the latest statuses for each server
     subquery = ServerStatus.objects.filter(
@@ -79,7 +79,7 @@ def LiveDatabaseServerGraphData(request):
 
 def LiveAPIServerGraphData(request):
 
-    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='10.10.10.16').values_list('id', flat=True)
+    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='1.1.1.1').values_list('id', flat=True)
 
     # Subquery to get the latest statuses for each server
     subquery = ServerStatus.objects.filter(
@@ -102,7 +102,7 @@ def LiveAPIServerGraphData(request):
 
 def LiveDashboardServerGraphData(request):
 
-    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='10.10.10.17').values_list('id', flat=True)
+    live_server_ids = VirtualServer.objects.filter(group='live', ip_address='142.250.190.78').values_list('id', flat=True)
 
     # Subquery to get the latest statuses for each server
     subquery = ServerStatus.objects.filter(
